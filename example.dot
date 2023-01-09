@@ -1,0 +1,34 @@
+digraph D {
+
+  node [shape=plaintext]
+
+  A [
+   label=<
+     <table border="0" cellborder="1" cellspacing="0" href="https://github.com/mihaigalos/aim/pull/208">
+       <tr><td bgcolor="#008000"><font color="#ffffff">aim/#208</font></td></tr>
+       <tr><td bgcolor="#ffffff"><font color="#000000">Open</font></td></tr>
+       <tr><td bgcolor="#657a7f"><font color="#ffffff">Fix vulnerability CVE-2022-23639</font></td></tr>
+     </table>>
+  ];
+
+
+  B [
+   label=<
+     <table border="0" cellborder="1" cellspacing="0" href="https://github.com/mihaigalos/aim/pull/189">
+       <tr><td bgcolor="#4c278d"><font color="#ffffff">aim/#189</font></td></tr>
+       <tr><td bgcolor="#ffffff"><font color="#000000">Merged</font></td></tr>
+       <tr><td bgcolor="#657a7f"><font color="#ffffff">Http serve: Propagate result</font></td></tr>
+     </table>>
+  ];
+
+  C [
+   label=<
+     <table border="0" cellborder="1" cellspacing="0" href="https://github.com/mihaigalos/aim/pull/182">
+       <tr><td bgcolor="#a02f2b"><font color="#ffffff">aim/#182</font></td></tr>
+       <tr><td bgcolor="#ffffff"><font color="#000000">Closed</font></td></tr>
+       <tr><td bgcolor="#657a7f"><font color="#ffffff">Fix OpenSSL dep - revision 300.0.10+3.0.6 yanked</font></td></tr>
+     </table>>
+  ];
+
+  A->B->C
+}
