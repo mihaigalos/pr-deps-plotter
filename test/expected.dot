@@ -9,7 +9,7 @@ digraph D {
       <tr><td bgcolor="#ffffff"><font color="#000000">open</font></td></tr>
       <tr><td bgcolor="#657a7f"><font color="#ffffff">Fix vulnerability CVE-2022-23639</font></td></tr>
     </table>>
-  ];
+    ];
 
     "aim/189" [
     label=<
@@ -18,7 +18,7 @@ digraph D {
       <tr><td bgcolor="#ffffff"><font color="#000000">merged</font></td></tr>
       <tr><td bgcolor="#657a7f"><font color="#ffffff">Http serve: Propagate result</font></td></tr>
     </table>>
-  ];
+    ];
 
     "aim/182" [
     label=<
@@ -27,6 +27,8 @@ digraph D {
       <tr><td bgcolor="#ffffff"><font color="#000000">closed</font></td></tr>
       <tr><td bgcolor="#657a7f"><font color="#ffffff">Fix OpenSSL dep - revision 300.0.10+3.0.6 yanked</font></td></tr>
     </table>>
-  ];
+    ];
 
+    "aim/208" -> "aim/189"
+    "aim/189" -> "aim/182"
 }
