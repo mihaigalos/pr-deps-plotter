@@ -8,15 +8,6 @@ import (
 	"text/template"
 )
 
-type PullRequest struct {
-	Name  string
-	Href  string
-	State string
-	Title string
-
-	Dependencies []*PullRequest
-}
-
 var header = `digraph D {
 
     node [shape=plaintext]
