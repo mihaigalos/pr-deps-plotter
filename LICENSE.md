@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2023 Mihai Galos
+Copyright (c) 2023-3023 Mihai Galos
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
