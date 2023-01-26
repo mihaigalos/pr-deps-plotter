@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"time"
 )
 //curl -s \
@@ -25,7 +25,14 @@ func read() []PullRequest {
 
 	//prs := []PullRequest{pr_aim_208, pr_aim_189, pr_aim_182}
 
-	req, _ := http.NewRequest("GET", "https://api.github.com/repos/scumjr/yubikeyedup/pulls/10", nil)
+
+	prs := []PullRequest{}
+
+	return prs
+}
+
+func GetPRInfo(url string) []string {
+	req, _ := http.NewRequest("GET", url , nil)
 	// ...
 	req.Header.Add("Accept", "application/vnd.github+json")
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
@@ -42,22 +49,11 @@ func read() []PullRequest {
 		log.Fatal(err)
 	}
 
-	fmt.Println(objmap)
-	
-
-	fmt.Println("-------------------------")
-
-
     var prInfo string
-    // Notice the dereferencing asterisk *
     err = json.Unmarshal([]byte(*objmap["body"]), &prInfo)
     if err != nil {
         log.Fatal(err)
     }
 
-	fmt.Printf("%+v\n", prInfo)
-
-	prs := []PullRequest{}
-
-	return prs
+	return regexp.MustCompile("\r?\n").Split(prInfo, -1)
 }
