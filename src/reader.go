@@ -9,14 +9,16 @@ import (
 	"strings"
 	"time"
 )
+
 //curl -s \
 //  -H "Accept: application/vnd.github+json" \
 //  -H "X-GitHub-Api-Version: 2022-11-28" \
 //  https://api.github.com/repos/scumjr/yubikeyedup/pulls/10 | jq .body | sed -e "s|\\\r\\\n|\n|g"
 
 var client = &http.Client{Timeout: 10 * time.Second}
+
 type PrInfo struct {
-    Body string
+	Body string
 }
 
 func read() []PullRequest {
@@ -25,7 +27,6 @@ func read() []PullRequest {
 	//pr_aim_208 := PullRequest{"aim/208", "https://github.com/mihaigalos/aim/pull/208", "open", "Fix vulnerability CVE-2022-23639", []*PullRequest{&pr_aim_189}}
 
 	//prs := []PullRequest{pr_aim_208, pr_aim_189, pr_aim_182}
-
 
 	prs := []PullRequest{}
 
@@ -37,8 +38,8 @@ func prependApi(url string) string {
 	schema := split[0]
 	remainder := split[1]
 	if !strings.HasPrefix(remainder, "api.") {
-		url = schema+"://api." + remainder
-    }
+		url = schema + "://api." + remainder
+	}
 
 	return url
 }
@@ -46,27 +47,27 @@ func prependApi(url string) string {
 func getPRInfo(url string) []string {
 	url = prependApi(url)
 
-	req, _ := http.NewRequest("GET", url , nil)
+	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
 	resp, _ := client.Do(req)
-	
-    body, err := ioutil.ReadAll(resp.Body)
 
-    if err != nil {
-        panic(err.Error())
-    }
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		panic(err.Error())
+	}
 
 	var objmap map[string]*json.RawMessage
 	if err := json.Unmarshal(body, &objmap); err != nil {
 		log.Fatal(err)
 	}
 
-    var prInfo string
-    err = json.Unmarshal([]byte(*objmap["body"]), &prInfo)
-    if err != nil {
-        log.Fatal(err)
-    }
+	var prInfo string
+	err = json.Unmarshal([]byte(*objmap["body"]), &prInfo)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return regexp.MustCompile("\r?\n").Split(prInfo, -1)
 }
@@ -74,7 +75,7 @@ func getPRInfo(url string) []string {
 func GetReferences(url string) []string {
 	prInfo := getPRInfo(url)
 	result := []string{}
-	for _,line := range prInfo {
+	for _, line := range prInfo {
 		if strings.HasSuffix(line, ".") {
 			line = line[:len(line)-1]
 		}
@@ -87,4 +88,3 @@ func GetReferences(url string) []string {
 	return result
 
 }
-

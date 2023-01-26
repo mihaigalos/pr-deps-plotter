@@ -44,7 +44,8 @@ var pr_closed = `
 
 var footer = `}
 `
-func write(prs []PullRequest){
+
+func write(prs []PullRequest) {
 
 	t, _ := template.New("header").Parse(header)
 	t.New("footer").Parse(footer)
@@ -73,4 +74,3 @@ func write(prs []PullRequest){
 	}
 	t.ExecuteTemplate(os.Stdout, "footer", "")
 }
-

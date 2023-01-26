@@ -8,4 +8,3 @@ type PullRequest struct {
 
 	Dependencies []*PullRequest
 }
-

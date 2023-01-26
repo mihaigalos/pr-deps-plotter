@@ -11,7 +11,7 @@ func TestReadWorks_whenTypical(t *testing.T) {
 	actual := ""
 	prInfo := getPRInfo("https://api.github.com/repos/scumjr/yubikeyedup/pulls/10")
 
-	for _,line := range prInfo {
+	for _, line := range prInfo {
 		if strings.HasSuffix(line, ".") {
 			line = line[:len(line)-1]
 		}
@@ -32,7 +32,7 @@ func TestReadWorks_whenNoApiInURL(t *testing.T) {
 	actual := ""
 	prInfo := getPRInfo("https://github.com/repos/scumjr/yubikeyedup/pulls/10")
 
-	for _,line := range prInfo {
+	for _, line := range prInfo {
 		if strings.HasSuffix(line, ".") {
 			line = line[:len(line)-1]
 		}
@@ -49,10 +49,10 @@ func TestReadWorks_whenNoApiInURL(t *testing.T) {
 }
 
 func TestGetReferencesWorks_whenTypical(t *testing.T) {
-	expected := []string {"https://github.com/scumjr/yubikeyedup/pull/9"}
+	expected := []string{"https://github.com/scumjr/yubikeyedup/pull/9"}
 	actual := GetReferences("https://github.com/repos/scumjr/yubikeyedup/pulls/10")
 
-	for i, e := range(actual){
+	for i, e := range actual {
 		if e != expected[i] {
 			t.Errorf("No Match: %s != %s", e, expected[i])
 		}
