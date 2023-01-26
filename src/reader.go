@@ -43,7 +43,7 @@ func prependApi(url string) string {
 	return url
 }
 
-func GetPRInfo(url string) []string {
+func getPRInfo(url string) []string {
 	url = prependApi(url)
 
 	req, _ := http.NewRequest("GET", url , nil)
@@ -70,3 +70,21 @@ func GetPRInfo(url string) []string {
 
 	return regexp.MustCompile("\r?\n").Split(prInfo, -1)
 }
+
+func GetReferences(url string) []string {
+	prInfo := getPRInfo(url)
+	result := []string{}
+	for _,line := range prInfo {
+		if strings.HasSuffix(line, ".") {
+			line = line[:len(line)-1]
+		}
+		r := regexp.MustCompile("^[dD]epends-[oO]n: (.*)+")
+		res := r.FindStringSubmatch(line)
+		if len(res) > 0 {
+			result = append(result, res[1])
+		}
+	}
+	return result
+
+}
+
