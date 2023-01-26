@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -33,8 +32,7 @@ func read() []PullRequest {
 	return prs
 }
 
-func GetPRInfo(url string) []string {
-
+func prependApi(url string) string {
 	split := strings.Split(url, "://")
 	schema := split[0]
 	remainder := split[1]
@@ -42,7 +40,12 @@ func GetPRInfo(url string) []string {
 		url = schema+"://api." + remainder
     }
 
-	fmt.Println(url)
+	return url
+}
+
+func GetPRInfo(url string) []string {
+	url = prependApi(url)
+
 	req, _ := http.NewRequest("GET", url , nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
