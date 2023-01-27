@@ -3,6 +3,6 @@
 package main
 
 func main() {
-	prs := read()
+	prs := read("https://api.github.com/repos/scumjr/yubikeyedup/pulls/10")
 	write(prs)
 }

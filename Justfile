@@ -21,10 +21,10 @@ build:
         .
 
 run:
-    go run src/*.go > {{ default_output }}
+    find src/ -name *.go -not \( -name *_test.go \) | xargs go run > {{ default_output }}
 
 @utest:
-    go test src/*.go
+    go test -v src/*.go
 
 @test: run
     [ $(diff test/expected.dot {{ default_output }} | wc -l) -eq 0 ] && echo '\e[1;32mOK\e[0m' || echo "\e[1;31mERROR: test/expected.dot incompatible with /tmp/actual.dot\e[0m"

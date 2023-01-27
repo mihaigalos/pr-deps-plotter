@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -21,16 +22,30 @@ type PrInfo struct {
 	Body string
 }
 
-func read() []PullRequest {
+func read(base_pr_url string) PullRequest {
 	//pr_aim_182 := PullRequest{"aim/182", "https://github.com/mihaigalos/aim/pull/182", "closed", "Fix OpenSSL dep - revision 300.0.10+3.0.6 yanked", nil}
 	//pr_aim_189 := PullRequest{"aim/189", "https://github.com/mihaigalos/aim/pull/189", "merged", "Http serve: Propagate result", []*PullRequest{&pr_aim_182}}
 	//pr_aim_208 := PullRequest{"aim/208", "https://github.com/mihaigalos/aim/pull/208", "open", "Fix vulnerability CVE-2022-23639", []*PullRequest{&pr_aim_189}}
 
 	//prs := []PullRequest{pr_aim_208, pr_aim_189, pr_aim_182}
 
-	prs := []PullRequest{}
+    references := GetReferences(base_pr_url)
+    base_pr_name := strings.Split(base_pr_url, "https://")[1]
+    base_pr_name = strings.Split(base_pr_url, "/")[1]
+    
+	deps := []*PullRequest {}
+    for _,ref := range references {
+    	name := strings.Split(ref, "https://")[1]
+    	name = strings.Split(ref, "/")[1]
+		state := getPRInfo(ref, "state")
+		description := getPRInfo(ref, "title")
+		dep := PullRequest{name, ref, state, description, nil}
+    	deps = append(deps, &dep)
+    }
+	base_pr_state := getPRInfo(base_pr_url, "state")
+	result := PullRequest {base_pr_name, base_pr_url, base_pr_state, "Description2", deps}
 
-	return prs
+	return result
 }
 
 func prependApi(url string) string {
@@ -44,8 +59,37 @@ func prependApi(url string) string {
 	return url
 }
 
-func getPRInfo(url string) []string {
+func addReposToURLPath(url string) string {
+	split := strings.Split(url, "://")
+	schema := split[0]
+	remainder := split[1]
+
+	split2 := strings.Split(remainder, "/")
+	domain := split2[0]
+	path := strings.Join(split2[1:],"/")
+	if !strings.HasPrefix(path, "repos") {
+		url = schema + "://" + domain + "/repos/" + path
+	}
+
+	return url
+}
+
+func addPullsToURLPath(url string) string {
+	split := strings.Split(url, "/")
+	path := split[0:len(split)-2]
+	pr_number := split[len(split)-1]
+	if !strings.HasSuffix(path[len(path)-1], "pulls") {
+		url = strings.Join(path, "/") + "/pulls/" + pr_number
+	}
+
+	return url
+}
+
+func getPRInfo(url string, field string) string {
 	url = prependApi(url)
+	url = addReposToURLPath(url)
+	url = addPullsToURLPath(url)
+	fmt.Println("++> ",url)
 
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
@@ -62,18 +106,22 @@ func getPRInfo(url string) []string {
 	if err := json.Unmarshal(body, &objmap); err != nil {
 		log.Fatal(err)
 	}
-
 	var prInfo string
-	err = json.Unmarshal([]byte(*objmap["body"]), &prInfo)
+
+	err = json.Unmarshal([]byte(*objmap[field]), &prInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
+	return prInfo;
+}
 
+func getPRBody(url string) []string {
+	prInfo := getPRInfo(url, "body")
 	return regexp.MustCompile("\r?\n").Split(prInfo, -1)
 }
 
 func GetReferences(url string) []string {
-	prInfo := getPRInfo(url)
+	prInfo := getPRBody(url)
 	result := []string{}
 	for _, line := range prInfo {
 		if strings.HasSuffix(line, ".") {
@@ -85,6 +133,6 @@ func GetReferences(url string) []string {
 			result = append(result, res[1])
 		}
 	}
-	return result
 
+	return result
 }
