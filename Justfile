@@ -9,9 +9,9 @@ docker_image_dockerhub_latest := docker_user_repo + "/" + tool + ":latest"
 @_default:
     just --list --unsorted
 
-preview: run
-    #!/bin/bash
-    xdot <(dot {{ default_output }})
+#preview: run
+#    #!/bin/bash
+#    xdot <(dot {{ default_output }})
 
 build:
     sudo docker build \
@@ -20,15 +20,15 @@ build:
         --tag {{ docker_image_dockerhub_latest }} \
         .
 
-run:
-    find src/ -name *.go -not \( -name *_test.go \) | xargs go run > {{ default_output }}
+run pr token:
+    find src/ -name *.go -not \( -name *_test.go \) | xargs go run '{{ pr }}' {{ token }} > {{ default_output }}
 
 @utest:
     go test -v src/*.go
 
-@test: run
-    [ $(diff test/expected.dot {{ default_output }} | wc -l) -eq 0 ] && echo '\e[1;32mOK\e[0m' || echo "\e[1;31mERROR: test/expected.dot incompatible with /tmp/actual.dot\e[0m"
+#   @test: run
+#       [ $(diff test/expected.dot {{ default_output }} | wc -l) -eq 0 ] && echo '\e[1;32mOK\e[0m' || echo "\e[1;31mERROR: test/expected.dot incompatible with /tmp/actual.dot\e[0m"
 
-show_svg: run
-    dot -Tsvg /tmp/actual.dot -o /tmp/test.svg
-    firefox /tmp/test.svg
+#   show_svg: run
+#       dot -Tsvg /tmp/actual.dot -o /tmp/test.svg
+#       firefox /tmp/test.svg

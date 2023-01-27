@@ -1,8 +1,14 @@
-// Our first program will print the classic "hello world"
-// message. Here's the full source code.
 package main
 
+import (
+    "os"
+)
+
 func main() {
-	prs := read("https://api.github.com/repos/scumjr/yubikeyedup/pulls/10")
+    args := os.Args[1:]
+	pr := args[0]
+	token := args[1]
+
+	prs := read(pr, token)
 	write(prs)
 }
