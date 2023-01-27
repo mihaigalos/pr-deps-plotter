@@ -21,7 +21,9 @@ build:
         .
 
 run pr token:
-    find src/ -name *.go -not \( -name *_test.go \) | xargs go run '{{ pr }}' {{ token }} > {{ default_output }}
+    #!/bin/bash
+    sources=$(find src/ -name *.go -not \( -name *_test.go \))
+    go run $sources {{ pr }} {{ token }} > {{ default_output }}
 
 @utest:
     go test -v src/*.go
