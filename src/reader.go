@@ -52,6 +52,9 @@ func read(base_pr_url string, token string) PullRequest {
 }
 
 func splitBasePRName(url string) string {
+	url = prependApi(url)
+	url = addReposToURLPath(url)
+	url = addPullsToURLPath(url)
     split := strings.Split(url, "https://")[1]
 	split = strings.Split(split, "/repos/")[1]
 	split2 := strings.Split(split, "/pulls/")
