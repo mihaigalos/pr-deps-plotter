@@ -45,14 +45,7 @@ var pr_closed = `
 var footer = `}
 `
 
-func write(pr PullRequest) {
-	t, _ := template.New("header").Parse(header)
-	t.New("footer").Parse(footer)
-	t.New("pr_open").Parse(pr_open)
-	t.New("pr_merged").Parse(pr_merged)
-	t.New("pr_closed").Parse(pr_closed)
-
-	t.ExecuteTemplate(os.Stdout, "header", "")
+func writePR(pr PullRequest, t *template.Template) {
 	switch pr.State {
 	case "open":
 		t.ExecuteTemplate(os.Stdout, "pr_open", pr)
@@ -62,9 +55,20 @@ func write(pr PullRequest) {
 		t.ExecuteTemplate(os.Stdout, "pr_closed", pr)
 	}
 	fmt.Println("")
+}
 
+func write(pr PullRequest) {
+	t, _ := template.New("header").Parse(header)
+	t.New("footer").Parse(footer)
+	t.New("pr_open").Parse(pr_open)
+	t.New("pr_merged").Parse(pr_merged)
+	t.New("pr_closed").Parse(pr_closed)
+
+	t.ExecuteTemplate(os.Stdout, "header", "")
+	writePR(pr, t)
 	if pr.Dependencies != nil {
 		for _, dep := range pr.Dependencies {
+			writePR(*dep, t)
 			fmt.Println("    \"" + pr.Name + "\" -> \"" + dep.Name + "\"")
 		}
 	}

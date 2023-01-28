@@ -105,7 +105,7 @@ func getPRInfo(url string, field string, token string) string {
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
-	req.Header.Add("Authorization", token)
+	//req.Header.Add("Authorization", token)
 	resp, _ := client.Do(req)
 
 	body, err := ioutil.ReadAll(resp.Body)
