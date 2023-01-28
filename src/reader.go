@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"strconv"
 	"time"
 )
 
@@ -38,18 +39,31 @@ func read(base_pr_url string, token string) PullRequest {
 		remainder := strings.Split(path, "/")
 		name := strings.Join(remainder[1:], "/")
 		fmt.Println("# read: ",name)
-		state := getPRInfo(ref, "state", token)
+		state := getPRState(ref, "state", token)
 		description := getPRInfo(ref, "title", token)
 		dep := PullRequest{name, ref, state, description, nil}
     	deps = append(deps, &dep)
     }
-	base_pr_state := getPRInfo(base_pr_url, "state", token)
+	base_pr_state := getPRState(base_pr_url, "state", token)
 	base_pr_description := getPRInfo(base_pr_url, "title", token)
 
 	result := PullRequest {base_pr_name, base_pr_url, base_pr_state, base_pr_description, deps}
 
 	return result
 }
+
+func getPRState(url string, field string, token string) string {
+	fmt.Println("# getPRState: ",url)
+	state := getPRInfo(url, "state", token)
+	_ = getPRInfo(url, "merged", token)
+	// is_merged, e := strconv.ParseBool(merged)
+	if state == "closed"{
+		state = "merged"
+	}
+
+	return state
+}
+
 
 func splitBasePRName(url string) string {
 	url = prependApi(url)
@@ -108,7 +122,7 @@ func getPRInfo(url string, field string, token string) string {
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
-	//req.Header.Add("Authorization", token)
+	req.Header.Add("Authorization", token)
 	resp, _ := client.Do(req)
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -121,13 +135,26 @@ func getPRInfo(url string, field string, token string) string {
 	if err := json.Unmarshal(body, &objmap); err != nil {
 		log.Fatal(err)
 	}
-	var prInfo string
 
-	err = json.Unmarshal([]byte(*objmap[field]), &prInfo)
+	return unmarshal(objmap, field);
+}
+
+func unmarshal(objmap map[string]*json.RawMessage, field string) string {
+	var prInfoString string
+	var prInfoBool bool
+
+	err := json.Unmarshal([]byte(*objmap[field]), &prInfoString)
+
 	if err != nil {
-		log.Fatal(err)
+		err = json.Unmarshal([]byte(*objmap[field]), &prInfoBool)
+		if err == nil {
+			return strconv.FormatBool(prInfoBool);
+		} else {
+			log.Fatal(err)
+		}
+
 	}
-	return prInfo;
+	return prInfoString;
 }
 
 func getPRBody(url string, token string) []string {
@@ -147,7 +174,7 @@ func getReferences(url string, token string) []string {
 		if len(res) > 0 {
 			result = append(result, res[1])
 		}
-	}
+}
 
 	return result
 }
