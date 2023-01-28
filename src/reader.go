@@ -34,8 +34,10 @@ func read(base_pr_url string, token string) PullRequest {
     
 	deps := []*PullRequest {}
     for _,ref := range references {
-    	name := strings.Split(ref, "https://")[1]
-    	name = strings.Split(ref, "/")[1]
+    	path := strings.Split(ref, "https://")[1]
+		remainder := strings.Split(path, "/")
+		name := strings.Join(remainder[1:], "/")
+		fmt.Println("# read: ",name)
 		state := getPRInfo(ref, "state", token)
 		description := getPRInfo(ref, "title", token)
 		dep := PullRequest{name, ref, state, description, nil}
