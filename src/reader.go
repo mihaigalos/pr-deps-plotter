@@ -44,9 +44,10 @@ func read(base_pr_url string, token string) PullRequest {
 func getPRState(url string, field string, token string) string {
 	fmt.Println("# getPRState: ",url)
 	state := getPRInfo(url, "state", token)
-	_ = getPRInfo(url, "merged", token)
-	// is_merged, e := strconv.ParseBool(merged)
-	if state == "closed"{
+	merged := getPRInfo(url, "merged", token)
+	is_merged, _ := strconv.ParseBool(merged)
+
+	if state == "closed" && is_merged {
 		state = "merged"
 	}
 
