@@ -23,22 +23,27 @@ type PrInfo struct {
 	Body string
 }
 
+func read_reference(ref string, token string) PullRequest {
+	path := strings.Split(ref, "https://")[1]
+	remainder := strings.Split(path, "/")
+	name := strings.Join(remainder[1:], "/")
+	fmt.Println("# read: ",name)
+	state := getPRState(ref, "state", token)
+	description := getPRInfo(ref, "title", token)
+
+	return PullRequest{name, ref, state, description, nil}
+}
+
 func read(base_pr_url string, token string) PullRequest {
     references := getReferences(base_pr_url, token)
-	base_pr_name := splitBasePRName(base_pr_url)
     
 	deps := []*PullRequest {}
     for _,ref := range references {
-    	path := strings.Split(ref, "https://")[1]
-		remainder := strings.Split(path, "/")
-		name := strings.Join(remainder[1:], "/")
-		fmt.Println("# read: ",name)
-		state := getPRState(ref, "state", token)
-		description := getPRInfo(ref, "title", token)
-		dep := PullRequest{name, ref, state, description, nil}
-    	deps = append(deps, &dep)
+		dep := read_reference(ref, token)
+		deps = append(deps, &dep)
     }
 
+	base_pr_name := splitBasePRName(base_pr_url)
 	base_pr_state := getPRState(base_pr_url, "state", token)
 	base_pr_description := getPRInfo(base_pr_url, "title", token)
 
