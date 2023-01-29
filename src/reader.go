@@ -42,7 +42,6 @@ func read(base_pr_url string, token string) PullRequest {
 }
 
 func getPRState(url string, field string, token string) string {
-	fmt.Println("# getPRState: ",url)
 	state := getPRInfo(url, "state", token)
 	merged := getPRInfo(url, "merged", token)
 	is_merged, _ := strconv.ParseBool(merged)
@@ -58,7 +57,6 @@ func getPRInfo(url string, field string, token string) string {
 	url = prependApi(url)
 	url = addReposToURLPath(url)
 	url = addPullsToURLPath(url)
-	fmt.Println("# ++> ",url)
 
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
