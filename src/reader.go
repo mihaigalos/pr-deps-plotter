@@ -23,23 +23,12 @@ type PrInfo struct {
 	Body string
 }
 
-func read_reference(ref string, token string) PullRequest {
-	path := strings.Split(ref, "https://")[1]
-	remainder := strings.Split(path, "/")
-	name := strings.Join(remainder[1:], "/")
-	fmt.Println("# read: ",name)
-	state := getPRState(ref, "state", token)
-	description := getPRInfo(ref, "title", token)
-
-	return PullRequest{name, ref, state, description, nil}
-}
-
 func read(base_pr_url string, token string) PullRequest {
     references := getReferences(base_pr_url, token)
     
 	deps := []*PullRequest {}
     for _,ref := range references {
-		dep := read_reference(ref, token)
+		dep := read(ref, token)
 		deps = append(deps, &dep)
     }
 
@@ -122,7 +111,7 @@ func getPRInfo(url string, field string, token string) string {
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
-	req.Header.Add("Authorization", token)
+	//req.Header.Add("Authorization", token)
 	resp, _ := client.Do(req)
 
 	body, err := ioutil.ReadAll(resp.Body)
