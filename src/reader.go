@@ -24,7 +24,7 @@ type PrInfo struct {
 }
 
 func read(base_pr_url string, token string) PullRequest {
-    references := getReferences(base_pr_url, token)
+    references := getPRReferences(base_pr_url, token)
     
 	deps := []*PullRequest {}
     for _,ref := range references {
@@ -62,7 +62,7 @@ func getPRInfo(url string, field string, token string) string {
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Accept", "application/vnd.github+json")
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
-	//req.Header.Add("Authorization", token)
+	req.Header.Add("Authorization", token)
 	resp, _ := client.Do(req)
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -84,6 +84,22 @@ func getPRBody(url string, token string) []string {
 	return regexp.MustCompile("\r?\n").Split(prInfo, -1)
 }
 
+func getPRReferences(url string, token string) []string {
+	prInfo := getPRBody(url, token)
+	result := []string{}
+	for _, line := range prInfo {
+		if strings.HasSuffix(line, ".") {
+			line = line[:len(line)-1]
+		}
+		r := regexp.MustCompile("^[dD]epends-[oO]n: (.*)+")
+		res := r.FindStringSubmatch(line)
+		if len(res) > 0 {
+			result = append(result, res[1])
+		}
+	}
+	return result
+}
+
 func unmarshal(objmap map[string]*json.RawMessage, field string) string {
 	var prInfoString string
 	var prInfoBool bool
@@ -102,18 +118,3 @@ func unmarshal(objmap map[string]*json.RawMessage, field string) string {
 	return prInfoString;
 }
 
-func getReferences(url string, token string) []string {
-	prInfo := getPRBody(url, token)
-	result := []string{}
-	for _, line := range prInfo {
-		if strings.HasSuffix(line, ".") {
-			line = line[:len(line)-1]
-		}
-		r := regexp.MustCompile("^[dD]epends-[oO]n: (.*)+")
-		res := r.FindStringSubmatch(line)
-		if len(res) > 0 {
-			result = append(result, res[1])
-		}
-	}
-	return result
-}
