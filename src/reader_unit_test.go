@@ -9,7 +9,7 @@ import (
 func TestReadWorks_whenTypical(t *testing.T) {
 	expected := "https://github.com/scumjr/yubikeyedup/pull/9"
 	actual := ""
-	prInfo := getPRBody("https://api.github.com/repos/scumjr/yubikeyedup/pulls/10")
+	prInfo := getPRBody("https://api.github.com/repos/scumjr/yubikeyedup/pulls/10", "")
 
 	for _, line := range prInfo {
 		if strings.HasSuffix(line, ".") {
@@ -30,7 +30,7 @@ func TestReadWorks_whenTypical(t *testing.T) {
 func TestReadWorks_whenNoApiInURL(t *testing.T) {
 	expected := "https://github.com/scumjr/yubikeyedup/pull/9"
 	actual := ""
-	prInfo := getPRBody("https://github.com/repos/scumjr/yubikeyedup/pulls/10")
+	prInfo := getPRBody("https://github.com/repos/scumjr/yubikeyedup/pulls/10", "")
 
 	for _, line := range prInfo {
 		if strings.HasSuffix(line, ".") {
@@ -50,7 +50,7 @@ func TestReadWorks_whenNoApiInURL(t *testing.T) {
 
 func TestGetReferencesWorks_whenTypical(t *testing.T) {
 	expected := []string{"https://github.com/scumjr/yubikeyedup/pull/9"}
-	actual := GetReferences("https://github.com/repos/scumjr/yubikeyedup/pulls/10")
+	actual := getPRReferences("https://github.com/repos/scumjr/yubikeyedup/pulls/10", "")
 
 	for i, e := range actual {
 		if e != expected[i] {
