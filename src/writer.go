@@ -54,6 +54,12 @@ func writePR(pr PullRequest, t *template.Template) {
 	case "closed":
 		t.ExecuteTemplate(os.Stdout, "pr_closed", pr)
 	}
+	if pr.Dependencies != nil {
+		for _, dep := range pr.Dependencies {
+			writePR(*dep, t)
+			fmt.Println("    \"" + pr.Name + "\" -> \"" + dep.Name + "\"")
+		}
+	}
 	fmt.Println("")
 }
 
@@ -66,11 +72,5 @@ func write(pr PullRequest) {
 
 	t.ExecuteTemplate(os.Stdout, "header", "")
 	writePR(pr, t)
-	if pr.Dependencies != nil {
-		for _, dep := range pr.Dependencies {
-			writePR(*dep, t)
-			fmt.Println("    \"" + pr.Name + "\" -> \"" + dep.Name + "\"")
-		}
-	}
 	t.ExecuteTemplate(os.Stdout, "footer", "")
 }
