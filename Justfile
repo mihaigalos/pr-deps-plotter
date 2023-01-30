@@ -1,10 +1,8 @@
-arch := `lscpu | grep Architecture | cut -d ' ' -f 21`
 tool := "pr-deps-plotter"
 docker_image_version := "0.0.1"
 docker_user_repo := "mihaigalos"
 docker_image_dockerhub := docker_user_repo + "/" + tool + ":" + docker_image_version
 docker_image_dockerhub_latest := docker_user_repo + "/" + tool + ":latest"
-just_version := "1.12.0"
 user := "user"
 
 @_default:
@@ -12,8 +10,6 @@ user := "user"
 
 dockerize:
     sudo docker build \
-        --build-arg=ARCH={{ arch }} \
-        --build-arg=JUST_VERSION={{ just_version }} \
         --build-arg=USER={{ user }} \
         --network=host \
         --tag {{ docker_image_dockerhub }} \
@@ -35,3 +31,7 @@ run pr token:
 
 @test:
     go test -v src/*.go
+
+push:
+    sudo docker push {{ docker_image_dockerhub }}
+    sudo docker push {{ docker_image_dockerhub_latest }}
