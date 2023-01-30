@@ -72,7 +72,7 @@ func buildTemplate() *template.Template {
 	return t
 }
 
-func write(pr PullRequest) {
+func Write(pr PullRequest) {
 	t := buildTemplate()
 	t.ExecuteTemplate(os.Stdout, "header", "")
 	writePR(pr, t)

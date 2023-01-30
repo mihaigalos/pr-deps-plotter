@@ -10,5 +10,5 @@ func main() {
 	token := args[1]
 
 	pr := Read(url, token)
-	write(pr)
+	Write(pr)
 }
