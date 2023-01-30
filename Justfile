@@ -25,19 +25,19 @@ dockerize:
         --tag {{ docker_image_dockerhub }} \
         --tag {{ docker_image_dockerhub_latest }} \
         .
+
 run_docker pr token:
-    touch {{ default_output }}
     sudo docker run \
     --rm -it \
     --net=host \
-    -v {{ default_output }}:{{ default_output }} \
     mihaigalos/pr-deps-plotter:0.0.1 \
-        {{ pr }} {{ token }} > {{ default_output }}
+        -- \
+        {{ pr }} {{ token }}
 
 run pr token:
     #!/bin/bash
     sources=$(find src/ -name *.go -not \( -name *_test.go \))
-    go run $sources {{ pr }} {{ token }} > {{ default_output }}
+    go run $sources {{ pr }} {{ token }}
 
 @utest:
     go test -v src/*.go

@@ -10,6 +10,10 @@ ARG ARCH
 ARG JUST_VERSION
 ARG USER
 
+RUN apk update && \
+    apk add \
+        graphviz
+
 COPY --from=base /src/src/pr-deps-plotter /usr/local/bin
 RUN cd $(mktemp -d) && \
     wget https://github.com/casey/just/releases/download/${JUST_VERSION}/just-${JUST_VERSION}-${ARCH}-unknown-linux-musl.tar.gz && \
@@ -20,5 +24,5 @@ RUN rm -rf /tmp/tmp.*
 RUN adduser -D ${USER}
 COPY Justfile /
 
-ENTRYPOINT [ "pr-deps-plotter" ]
+ENTRYPOINT [ "/bin/sh", "-c", "pr-deps-plotter $1 $2 | dot -Tsvg" ]
 
