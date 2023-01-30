@@ -22,12 +22,12 @@ type PrInfo struct {
 	Body string
 }
 
-func read(base_pr_url string, token string) PullRequest {
+func Read(base_pr_url string, token string) PullRequest {
 	references := getPRReferences(base_pr_url, token)
 
 	deps := []*PullRequest{}
 	for _, ref := range references {
-		dep := read(ref, token)
+		dep := Read(ref, token)
 		deps = append(deps, &dep)
 	}
 
