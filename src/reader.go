@@ -11,16 +11,7 @@ import (
 	"time"
 )
 
-//curl -s \
-//  -H "Accept: application/vnd.github+json" \
-//  -H "X-GitHub-Api-Version: 2022-11-28" \
-//  https://api.github.com/repos/scumjr/yubikeyedup/pulls/10 | jq .body | sed -e "s|\\\r\\\n|\n|g"
-
 var client = &http.Client{Timeout: 10 * time.Second}
-
-type PrInfo struct {
-	Body string
-}
 
 func Read(base_pr_url string, token string) PullRequest {
 	references := getPRReferences(base_pr_url, token)
