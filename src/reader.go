@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strings"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -23,19 +23,19 @@ type PrInfo struct {
 }
 
 func read(base_pr_url string, token string) PullRequest {
-    references := getPRReferences(base_pr_url, token)
-    
-	deps := []*PullRequest {}
-    for _,ref := range references {
+	references := getPRReferences(base_pr_url, token)
+
+	deps := []*PullRequest{}
+	for _, ref := range references {
 		dep := read(ref, token)
 		deps = append(deps, &dep)
-    }
+	}
 
 	base_pr_name := splitBasePRName(base_pr_url)
 	base_pr_state := getPRState(base_pr_url, "state", token)
 	base_pr_description := getPRInfo(base_pr_url, "title", token)
 
-	result := PullRequest {base_pr_name, base_pr_url, base_pr_state, base_pr_description, deps}
+	result := PullRequest{base_pr_name, base_pr_url, base_pr_state, base_pr_description, deps}
 
 	return result
 }
@@ -74,7 +74,7 @@ func getPRInfo(url string, field string, token string) string {
 		log.Fatal(err)
 	}
 
-	return unmarshal(objmap, field);
+	return unmarshal(objmap, field)
 }
 
 func getPRBody(url string, token string) []string {
@@ -107,12 +107,11 @@ func unmarshal(objmap map[string]*json.RawMessage, field string) string {
 	if err != nil {
 		err = json.Unmarshal([]byte(*objmap[field]), &prInfoBool)
 		if err == nil {
-			return strconv.FormatBool(prInfoBool);
+			return strconv.FormatBool(prInfoBool)
 		} else {
 			log.Fatal(err)
 		}
 
 	}
-	return prInfoString;
+	return prInfoString
 }
-

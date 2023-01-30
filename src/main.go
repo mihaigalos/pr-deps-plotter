@@ -1,11 +1,11 @@
 package main
 
 import (
-    "os"
+	"os"
 )
 
 func main() {
-    args := os.Args[1:]
+	args := os.Args[1:]
 	url := args[0]
 	token := args[1]
 
