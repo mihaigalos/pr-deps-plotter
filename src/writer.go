@@ -63,13 +63,17 @@ func writePR(pr PullRequest, t *template.Template) {
 	fmt.Println("")
 }
 
-func write(pr PullRequest) {
+func buildTemplate() *template.Template {
 	t, _ := template.New("header").Parse(header)
 	t.New("footer").Parse(footer)
 	t.New("pr_open").Parse(pr_open)
 	t.New("pr_merged").Parse(pr_merged)
 	t.New("pr_closed").Parse(pr_closed)
+	return t
+}
 
+func write(pr PullRequest) {
+	t := buildTemplate()
 	t.ExecuteTemplate(os.Stdout, "header", "")
 	writePR(pr, t)
 	t.ExecuteTemplate(os.Stdout, "footer", "")
