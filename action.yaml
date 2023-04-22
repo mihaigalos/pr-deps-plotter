@@ -30,6 +30,6 @@ runs:
       run: |
         sources=$(find src/ -name *.go -not \( -name *_test.go \))
         echo 'SVG<<EOF' >> $GITHUB_OUTPUT
-        go run $sources ${{ inputs.PR_URL }} ${{ inputs.TOKEN }} >> $GITHUB_OUTPUT
+        go run $sources ${{ inputs.PR_URL }} ${{ inputs.TOKEN }} | dot -Tsvg >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
         cat $(echo $GITHUB_OUTPUT)

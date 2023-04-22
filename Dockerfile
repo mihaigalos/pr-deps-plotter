@@ -15,5 +15,5 @@ COPY entrypoint.sh /
 
 RUN adduser -D user
 
-ENTRYPOINT [ "/entrypoint.sh", "$1", "$2"]
+ENTRYPOINT [ "/bin/sh", "-c", "pr-deps-plotter $1 $2 | dot -Tsvg" ]
 
