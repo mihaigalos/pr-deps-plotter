@@ -19,4 +19,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Output result
-        run: echo "Output ${{ steps.run.outputs.svg }}"
+        run: echo "Output ${{ steps.run.outputs.SVG }}"
