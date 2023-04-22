@@ -3,10 +3,6 @@ name: Test
 on:
   workflow_dispatch: # Run with Run Workflow button in GitHub Action Job, set debug_enabled=true for interactive ssh session.
     inputs:
-      debug_enabled:
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'     
-        required: false
-        default: false
 
 jobs:
   pr-deps-plotter:
@@ -17,7 +13,7 @@ jobs:
       
       - name: Run
         id: run
-        uses: .
+        uses: ./
         with:
           pr_url: 'https://github.com/wisespace-io/yubico-rs/pull/26'
           token: $GITHUB_TOKEN
