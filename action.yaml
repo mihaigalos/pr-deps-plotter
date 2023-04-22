@@ -27,6 +27,7 @@ runs:
       run: |
         set -x
         PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+        [ PR_NUMBER = "main" ] && exit 0 || true
         sources=$(find src/ -name *.go -not \( -name *_test.go \))
         go run $sources ${{ inputs.PR_URL }} ${{ inputs.TOKEN }} | dot -Tpng >> /tmp/pr-deps-plotter.png
         upload_path=$(curl --upload-file /tmp/pr-deps-plotter.png https://transfer.sh/pr-deps-plotter.png)
