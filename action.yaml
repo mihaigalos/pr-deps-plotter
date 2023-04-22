@@ -32,6 +32,6 @@ runs:
         go run $sources ${{ inputs.PR_URL }} ${{ inputs.TOKEN }} | dot -Tpng >> /tmp/pr-deps-plotter.png
         upload_path=$(curl --upload-file /tmp/pr-deps-plotter.png https://transfer.sh/pr-deps-plotter.png)
         curl -H 'Authorization: Token ${{ inputs.TOKEN }}' -X POST \
-          -d '{"body": "Dependency graph for this PR:\n[![PR Deps]('$(echo $upload_path)')]()\nImage hosted at: $upload_path"}' \
+        -d '{"body": "<!-- PRDepPlotter -->\nDependency graph for this PR:\n[![PR Deps]('$(echo $upload_path)')]()\nImage hosted at: '$upload_path'"}' \
           "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments"
 
