@@ -16,7 +16,7 @@ jobs:
         uses: ./
         with:
           pr_url: 'https://github.com/wisespace-io/yubico-rs/pull/26'
-          token: $GITHUB_TOKEN
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get the output time
+      - name: Output result
         run: echo "Output ${{ steps.run.outputs.svg }}"

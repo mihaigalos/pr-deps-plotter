@@ -3,14 +3,12 @@ docker_image_version := "0.0.1"
 docker_user_repo := "mihaigalos"
 docker_image_dockerhub := docker_user_repo + "/" + tool + ":" + docker_image_version
 docker_image_dockerhub_latest := docker_user_repo + "/" + tool + ":latest"
-user := "user"
 
 @_default:
     just --list --unsorted
 
 dockerize:
     sudo docker build \
-        --build-arg=USER={{ user }} \
         --network=host \
         --tag {{ docker_image_dockerhub }} \
         --tag {{ docker_image_dockerhub_latest }} \
