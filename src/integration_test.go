@@ -37,8 +37,59 @@ func TestIntegrationWorks_whenTypical(t *testing.T) {
 
 	pr := Read("https://github.com/wisespace-io/yubico-rs/pull/26", "")
 
-    r, w, _ := os.Pipe()
-    os.Stdout = w
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+	Write(pr)
+	w.Close()
+	actual, _ := ioutil.ReadAll(r)
+
+	expected_lines := strings.Split(expected, "\n")
+	actual_lines := strings.Split(string(actual), "\n")
+
+	if len(actual_lines) != len(expected_lines) {
+		t.Errorf("len(actual) %d != len(expected) %d", len(actual_lines), len(expected_lines))
+	}
+
+	for i, actual_line := range actual_lines {
+		if actual_line != expected_lines[i] {
+			t.Errorf("No Match: %s != %s", actual_line, expected_lines[i])
+		}
+	}
+
+}
+
+func TestIntegrationWorks_whenReferencedPRHasNoBody(t *testing.T) {
+	expected := `digraph D {
+
+    node [shape=plaintext]
+
+    "mihaigalos/pr-deps-plotter/7" [
+    label=<
+    <table border="0" cellborder="1" cellspacing="0" href="https://github.com/mihaigalos/pr-deps-plotter/pull/7">
+      <tr><td bgcolor="#008000"><font color="#ffffff">mihaigalos/pr-deps-plotter/7</font></td></tr>
+      <tr><td bgcolor="#ffffff"><font color="#000000">open</font></td></tr>
+      <tr><td bgcolor="#657a7f"><font color="#ffffff">Action: Auto-detect PR number</font></td></tr>
+    </table>>
+    ];
+
+    "mihaigalos/pr-deps-plotter/6" [
+    label=<
+    <table border="0" cellborder="1" cellspacing="0" href="https://github.com/mihaigalos/pr-deps-plotter/pull/6">
+      <tr><td bgcolor="#008000"><font color="#ffffff">mihaigalos/pr-deps-plotter/6</font></td></tr>
+      <tr><td bgcolor="#ffffff"><font color="#000000">open</font></td></tr>
+      <tr><td bgcolor="#657a7f"><font color="#ffffff">Update README.md</font></td></tr>
+    </table>>
+    ];
+
+    "mihaigalos/pr-deps-plotter/7" -> "mihaigalos/pr-deps-plotter/6"
+
+}
+`
+
+	pr := Read("https://github.com/mihaigalos/pr-deps-plotter/pull/7", "")
+
+	r, w, _ := os.Pipe()
+	os.Stdout = w
 	Write(pr)
 	w.Close()
 	actual, _ := ioutil.ReadAll(r)

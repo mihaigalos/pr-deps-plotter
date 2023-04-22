@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,7 +18,6 @@ func Read(base_pr_url string, token string) PullRequest {
 
 	deps := []*PullRequest{}
 	for _, ref := range references {
-		fmt.Println("In for: {}", ref)
 		dep := Read(ref, token)
 		deps = append(deps, &dep)
 	}
@@ -52,11 +50,14 @@ func getPRInfo(url string, field string, token string) string {
 
 	req, _ := http.NewRequest("GET", url, nil)
 	bearer := "Bearer " + token
-	fmt.Println("Call: {}", field)
 	req.Header.Add("Accept", "application/vnd.github+json")
+	req.Header.Add("Authorization", bearer)
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
-	req.Header.Set("Authorization", bearer)
-	resp, _ := client.Do(req)
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println("Error on response.\n[ERROR] -", err)
+	}
+	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 
@@ -96,6 +97,10 @@ func getPRReferences(url string, token string) []string {
 func unmarshal(objmap map[string]*json.RawMessage, field string) string {
 	var prInfoString string
 	var prInfoBool bool
+
+	if objmap[field] == nil {
+		return ""
+	}
 
 	err := json.Unmarshal([]byte(*objmap[field]), &prInfoString)
 
