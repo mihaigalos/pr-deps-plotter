@@ -11,8 +11,9 @@ RUN apk update && \
         graphviz
 
 COPY --from=base /src/src/pr-deps-plotter /usr/local/bin
+COPY entrypoint.sh /
 
 RUN adduser -D user
 
-ENTRYPOINT [ "/bin/sh", "-c", "pr-deps-plotter $1 $2 | dot -Tsvg" ]
+ENTRYPOINT [ "/entrypoint.sh", "$1", "$2"]
 
