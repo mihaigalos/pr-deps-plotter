@@ -1,9 +1,6 @@
 name: pr-deps-plotter
 description: '✏️  Draw diagrams representing pull request dependencies.'
 inputs:
-  PR_URL:
-    description: 'The URL to the pull request whose dependency tree to analyze.'
-    required: true
   TOKEN:
     description: 'GitHub token to authenticate the action.'
     required: true
@@ -29,7 +26,7 @@ runs:
         PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
         [ PR_NUMBER = "main" ] && exit 0 || true
         sources=$(find src/ -name *.go -not \( -name *_test.go \))
-        go run $sources ${{ inputs.PR_URL }} ${{ inputs.TOKEN }} | dot -Tpng >> /tmp/pr-deps-plotter.png
+        go run $sources "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" ${{ inputs.TOKEN }} | dot -Tpng >> /tmp/pr-deps-plotter.png
         PREVIOUS_COMMENT=$(curl -L \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ inputs.TOKEN }}"\
