@@ -27,4 +27,5 @@ runs:
       run: |
         sources=$(find src/ -name *.go -not \( -name *_test.go \))
         result=$(go run $sources ${{ inputs.pr_url }} ${{ inputs.token }})
-        echo "svg=$result" >> $GITHUB_OUTPUT
+        echo $result
+        echo "svg='"$result"'" >> $GITHUB_OUTPUT
