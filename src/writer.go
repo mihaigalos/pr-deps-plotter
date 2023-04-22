@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"bytes"
 	"text/template"
 )
 
@@ -45,22 +44,25 @@ var pr_closed = `
 var footer = `}
 `
 
-func writePR(pr PullRequest, t *template.Template) {
+func writePR(pr PullRequest, t *template.Template) string {
+	buf := &bytes.Buffer{}
 	switch pr.State {
 	case "open":
-		t.ExecuteTemplate(os.Stdout, "pr_open", pr)
+		t.ExecuteTemplate(buf, "pr_open", pr)
 	case "merged":
-		t.ExecuteTemplate(os.Stdout, "pr_merged", pr)
+		t.ExecuteTemplate(buf, "pr_merged", pr)
 	case "closed":
-		t.ExecuteTemplate(os.Stdout, "pr_closed", pr)
+		t.ExecuteTemplate(buf, "pr_closed", pr)
 	}
+	result := buf.String()
 	if pr.Dependencies != nil {
 		for _, dep := range pr.Dependencies {
-			writePR(*dep, t)
-			fmt.Println("    \"" + pr.Name + "\" -> \"" + dep.Name + "\"")
+			result += writePR(*dep, t)
+			result += "    \"" + pr.Name + "\" -> \"" + dep.Name + "\""
 		}
 	}
-	fmt.Println("")
+	result += "\n"
+	return result
 }
 
 func buildTemplate() *template.Template {
@@ -72,9 +74,15 @@ func buildTemplate() *template.Template {
 	return t
 }
 
-func Write(pr PullRequest) {
+func Write(pr PullRequest) string {
 	t := buildTemplate()
-	t.ExecuteTemplate(os.Stdout, "header", "")
-	writePR(pr, t)
-	t.ExecuteTemplate(os.Stdout, "footer", "")
+	buf := &bytes.Buffer{}
+	t.ExecuteTemplate(buf, "header", "")
+	result := buf.String()
+	result += writePR(pr, t)
+
+	buf = &bytes.Buffer{}
+	t.ExecuteTemplate(buf, "footer", "")
+	result += buf.String()
+	return result
 }

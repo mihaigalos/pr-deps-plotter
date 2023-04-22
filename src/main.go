@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -10,5 +11,5 @@ func main() {
 	token := args[1]
 
 	pr := Read(url, token)
-	Write(pr)
+	fmt.Println(Write(pr))
 }
