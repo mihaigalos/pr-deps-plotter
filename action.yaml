@@ -26,6 +26,7 @@ runs:
       shell: bash
       run: |
         sources=$(find src/ -name *.go -not \( -name *_test.go \))
-        result=$(go run $sources ${{ inputs.pr_url }} ${{ inputs.token }})
-        echo $result
-        echo "svg='"$result"'" >> $GITHUB_OUTPUT
+        echo "svg<<EOF" >> $GITHUB_OUTPUT
+        go run $sources ${{ inputs.pr_url }} ${{ inputs.token }} >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        cat $(echo $GITHUB_OUTPUT)
