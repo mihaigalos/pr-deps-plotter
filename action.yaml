@@ -34,3 +34,4 @@ runs:
           -d '{"body": "[![PR Deps]('$(echo $upload_path)')]()"}' \
           "https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments"
         rm /tmp/pr-deps-plotter
+
