@@ -17,6 +17,3 @@ jobs:
         with:
           pr_url: 'https://github.com/wisespace-io/yubico-rs/pull/26'
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Output result
-        run: echo "Output ${{ steps.plot_deps.outputs.SVG }}"
