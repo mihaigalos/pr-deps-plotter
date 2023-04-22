@@ -13,11 +13,10 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Set up Graphviz
-      shell: bash
-      run: apt update && apt install -y graphviz
+    - name: Setup Graphviz
+      uses: ts-graphviz/setup-graphviz@v1
 
-    - name: Set up Go
+    - name: Setup Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.17
