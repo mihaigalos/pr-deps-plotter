@@ -30,6 +30,13 @@ runs:
         [ PR_NUMBER = "main" ] && exit 0 || true
         sources=$(find src/ -name *.go -not \( -name *_test.go \))
         go run $sources ${{ inputs.PR_URL }} ${{ inputs.TOKEN }} | dot -Tpng >> /tmp/pr-deps-plotter.png
+        previous_comment=$(curl -L \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ inputs.TOKEN }}"\
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments | jq '.[] | select(.body | strings | test("PRDepPlotter")) | .id' \
+          || true
+        )
         upload_path=$(curl --upload-file /tmp/pr-deps-plotter.png https://transfer.sh/pr-deps-plotter.png)
         curl -H 'Authorization: Token ${{ inputs.TOKEN }}' -X POST \
         -d '{"body": "<!-- PRDepPlotter -->\nDependency graph for this PR:\n[![PR Deps]('$(echo $upload_path)')]()\nImage hosted at: '$upload_path'"}' \
