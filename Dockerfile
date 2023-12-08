@@ -4,7 +4,7 @@ COPY . /src
 RUN cd /src/src \
     &&  go build -o pr-deps-plotter
 
-FROM alpine:3.17 as tool
+FROM alpine:3.19 as tool
 
 RUN apk update && \
     apk add \
