@@ -31,8 +31,10 @@ View with, for example:
 $ firefox out.svg
 ```
 
-
 ## Requirements
 `pr-deps-plotter` depends on [`just`](https://github.com/casey/just) for easy dispatch.
 
 If you'd rather not have that dependency, you can manually invoke the commands from [here](https://github.com/mihaigalos/pr-deps-plotter/blob/main/Justfile).
+
+
+
